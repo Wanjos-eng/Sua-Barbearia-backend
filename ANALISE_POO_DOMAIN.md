@@ -1,4 +1,4 @@
-## 🎯 RESUMO EXECUTIVO
+## RESUMO EXECUTIVO
 
 - **Total de Classes Reais:** 20 classes
 - **Enums:** 5 tipos
@@ -7,9 +7,9 @@
 
 ---
 
-## 📋 INVENTÁRIO DE CLASSES
+## INVENTÁRIO DE CLASSES
 
-### 1️⃣ ENTIDADES DE DOMÍNIO (20 classes)
+### ENTIDADES DE DOMÍNIO (20 classes)
 
 #### **HIERARQUIA DE USUÁRIOS**
 
