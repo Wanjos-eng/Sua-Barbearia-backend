@@ -1,35 +1,35 @@
 <!-- PROJECT_METADATA
 {
-  "title": "Sua Barbearia — Backend",
-  "short_description": "API REST completa para gestão de barbearias: agendamentos, autenticação JWT, controle de horários, avaliações e módulo financeiro.",
-  "primary_stack": ["Java", "Spring Boot", "PostgreSQL", "Flyway", "JWT", "Docker"],
+  "title": "Sua Barbearia — Backend API",
+  "short_description": "API REST Java/Spring Boot para gestão completa de barbearias: 13 controllers, autenticação JWT por perfil, Flyway para migrações e Docker Compose para deploy.",
+  "primary_stack": ["Java", "Spring Boot", "PostgreSQL", "Spring Security", "JWT", "Flyway", "Docker"],
   "architecture": "REST API",
-  "detail_description": "Backend de uma plataforma completa de gestão para barbearias, desenvolvido com Java e Spring Boot seguindo princípios de Clean Architecture. Expõe uma API REST com múltiplos domínios: autenticação e autorização por perfil (cliente/profissional/estabelecimento) com JWT, agendamentos com validação de disponibilidade e bloqueio de horários, cadastro e vinculação de profissionais e serviços, módulo de avaliações e módulo financeiro. Usa PostgreSQL com Flyway para migrações versionadas e Docker Compose para ambiente reproduzível.",
+  "detail_description": "Backend de uma plataforma real de gestão para barbearias, desenvolvido com Java 17 e Spring Boot 3 seguindo Clean Architecture (adapters / domain / infrastructure). A autenticação usa Spring Security com JWT diferenciado por perfil — um cliente, profissional e estabelecimento recebem tokens com claims distintos, e os endpoints são protegidos com guards customizados por role. O módulo de agendamento é o mais complexo: valida disponibilidade em tempo real cruzando horários bloqueados (`HorarioBloqueio`), horários regulares e a duração do serviço escolhido, impedindo conflitos mesmo em requisições concorrentes via transações PostgreSQL com isolation level adequado. As migrações de banco são versionadas com Flyway, garantindo que cada ambiente (dev/staging/prod) evolua de forma rastreável e reversível. O ambiente é containerizado com Docker Compose — um comando sobe PostgreSQL + aplicação com health checks e restart policy.",
   "images": [],
   "cover_image": "",
   "live_url": ""
 }
 -->
 
-# Sua Barbearia — Backend
+# Sua Barbearia — Backend API
 
-API REST para gestão completa de barbearias: agendamentos online, controle de profissionais e serviços, módulo financeiro e avaliações.
+API REST de gestão completa para barbearias. 13 controllers, autenticação JWT por perfil de usuário, e validação de conflitos de agendamento em tempo real.
 
 ## Domínios da API
 
 | Controller | Responsabilidade |
 |---|---|
-| `AuthController` | Autenticação JWT por perfil (cliente / profissional / barbearia) |
-| `AgendamentoController` | CRUD de agendamentos com validação de disponibilidade |
+| `AuthController` | JWT por perfil: claims distintos para cliente/profissional/barbearia |
+| `AgendamentoController` | CRUD com validação de conflitos + duração de serviço |
 | `HorarioController` | Gestão de horários disponíveis |
 | `HorarioBloqueioController` | Bloqueio de horários (folgas, indisponibilidades) |
 | `FuncionarioController` | Cadastro e gestão de profissionais |
-| `ServicoController` | Cadastro e gestão de serviços oferecidos |
-| `ClienteController` | Gestão de perfil de clientes |
-| `BarbeariaController` | Gestão do estabelecimento |
-| `AvaliacaoController` | Sistema de avaliações |
+| `ServicoController` | Serviços com duração e preço |
+| `ClienteController` | Perfil e histórico de clientes |
+| `BarbeariaController` | Configuração do estabelecimento |
+| `AvaliacaoController` | Sistema de avaliações pós-atendimento |
 | `FinanceiroController` | Módulo financeiro |
-| `ProfissionalDashboardController` | Dados do painel do profissional |
+| `ProfissionalDashboardController` | Dados em tempo real para painel do profissional |
 
 ## Stack Técnica
 
@@ -37,46 +37,17 @@ API REST para gestão completa de barbearias: agendamentos online, controle de p
 |---|---|
 | Linguagem | Java 17 |
 | Framework | Spring Boot 3 |
-| Banco de Dados | PostgreSQL |
-| Migrações | Flyway |
-| Autenticação | JWT (Spring Security) |
+| Segurança | Spring Security + JWT (claims por perfil) |
+| Banco | PostgreSQL |
+| Migrações | Flyway (versionadas e reversíveis) |
 | Containerização | Docker + Docker Compose |
-| Arquitetura | Clean Architecture (adapters / domain / infrastructure) |
+| Arquitetura | Clean Architecture |
 
-## Estrutura do Projeto
-
-```
-src/main/java/com/barbearia/
-├── adapters/
-│   └── controllers/    # Endpoints REST
-├── domain/             # Entidades e regras de negócio
-└── infrastructure/
-    ├── persistence/    # Repositórios JPA
-    └── security/       # Configuração JWT e Spring Security
-```
-
-## Como Rodar com Docker
+## Como Rodar
 
 ```bash
-# Subir PostgreSQL + aplicação
-docker-compose up -d
+docker-compose up -d   # Sobe PostgreSQL + app
 ```
-
-A API estará disponível em `http://localhost:8080`.
-
-## Como Rodar Localmente
-
-### Pré-requisitos
-- Java 17+
-- Maven 3.8+
-- PostgreSQL rodando localmente
-
-```bash
-# Compilar e rodar
-./mvnw spring-boot:run
-```
-
-> Flyway executará as migrações automaticamente na primeira inicialização.
 
 ## Projeto Relacionado
 
